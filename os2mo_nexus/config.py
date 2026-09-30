@@ -25,4 +25,4 @@ class Settings(BaseSettings):
         env_nested_delimiter = "__"
 
     fastramqpi: FastRAMQPISettings
-    nexus: NexusSettings | None
+    nexus: NexusSettings
