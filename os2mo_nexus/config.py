@@ -11,7 +11,6 @@ class NexusOIDCSettings(BaseModel):
     client_id: str
     client_secret: str
     token_endpoint: AnyHttpUrl
-    scope: str
 
 
 class NexusSettings(BaseModel):

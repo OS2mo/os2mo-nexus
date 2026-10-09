@@ -18,7 +18,6 @@ class NexusAPI:
             client_secret=settings.oidc.client_secret,
             grant_type="client_credentials",
             token_endpoint=settings.oidc.token_endpoint,
-            scope=settings.oidc.scope,
             # TODO (https://github.com/lepture/authlib/issues/531): Hack to enable
             # automatic fetching of token on first call, instead of only refreshing.
             token={"expires_at": -1, "access_token": ""},
