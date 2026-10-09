@@ -25,6 +25,7 @@ services:
       # event system), but FastRAMQPI's integration-test fixtures still require
       # AMQP connection settings to be present.
       FASTRAMQPI__AMQP__URL: "amqp://guest:guest@msg-broker:5672/"
+    env_file: nexus.env
     networks:
       - default
       - os2mo_default
