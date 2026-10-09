@@ -18,6 +18,7 @@ fastapi = "^0.115"
 websockets = "^13" # for ariadne
 Authlib = "^1"
 # more-itertools = "^10"
+httpx2 = "^2"
 
 [tool.poetry.group.pre-commit.dependencies]
 mypy = "^2"
@@ -85,6 +86,8 @@ force-single-line = true
 
 [tool.deptry.per_rule_ignores]
 DEP002 = [
+  # httpx2 is used to get proper typing with authlib's AsyncOAuth2Client
+  "httpx2",
   # uvicorn is used by the Dockerfile
   "uvicorn",
 ]
