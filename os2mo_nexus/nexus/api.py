@@ -6,13 +6,18 @@ from contextlib import asynccontextmanager
 from authlib.integrations.httpx_client import AsyncOAuth2Client
 
 from os2mo_nexus.config import NexusSettings
+from os2mo_nexus.nexus.models import Home
 
 
 class NexusAPI:
     """
     The KMD Nexus API is based on JSON Hypertext Application Language[1]. The
-    documentation is not openly available, see Redmine[2] for a dump of the
+    documentation is not openly available; see Redmine[2] for a dump of the
     documentation.
+
+    In short, we are not supposed to hard-code any URLs. All operations are
+    discovered by following the _links dict on objects, including the "home"
+    object, which is the entrypoint of the API.
 
     [1]: https://datatracker.ietf.org/doc/html/draft-kelly-json-hal-11
     [2]: https://redmine.magenta.dk/issues/71980
@@ -36,13 +41,18 @@ class NexusAPI:
         async with self.client:
             yield
 
-    async def home(self) -> dict:
-        r = (await self.client.get("/api/core/mobile/unity/v2/")).json()
-        return r
-
-    async def todo(self) -> None:
-        home = await self.home()
-        x = home["_links"]["stsCdiCases"]["href"]
-        r = await self.client.get(x)
+    async def home(self) -> Home:
+        r = await self.client.get("/api/core/mobile/unity/v2/")
         r.raise_for_status()
-        print("rrr", r)
+        return Home.parse_raw(r.content)
+
+    async def todo(self, query: str = "LAR5") -> None:
+        """Try to import an FK professional with the given query.
+
+        The query may be a UUID, a username (Brugernavn) or a CPR number.
+        """
+        home = await self.home()
+        href = home.links.importProfessionalFromSts.href
+        r = await self.client.get(href, params={"query": query})
+        r.raise_for_status()
+        print(r.json())
